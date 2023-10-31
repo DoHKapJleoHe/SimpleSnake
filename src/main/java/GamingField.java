@@ -10,8 +10,7 @@ public class GamingField extends JPanel implements KeyListener
     private final int dim = 20;
 
     private Snake snake;
-    private Point food; // +1 point
-    private Point specialFood; // +2 points, spawns randomly
+    private Food food;
     private final Timer timer;
 
     private boolean isStopped = false;
@@ -28,7 +27,7 @@ public class GamingField extends JPanel implements KeyListener
         this.setVisible(true);
 
 
-        food = new Point(13, 18);
+        food = new Food(new Point(13, 18));
         timer = new Timer(200, e -> {
             moveSnake();
             repaint();
@@ -112,8 +111,12 @@ public class GamingField extends JPanel implements KeyListener
                 snake.getBody().remove(snake.getSnakeLength() - 1);
             else
             {
+                if (food.getType() == FoodType.NORMAL)
+                    snake.addScore();
+                else
+                    snake.add2Score();
+
                 spawnNewFood();
-                snake.addScore();
                 scoreObserver.updateScore(snake.getScore());
             }
         }
@@ -152,19 +155,13 @@ public class GamingField extends JPanel implements KeyListener
             }
         }
 
-        food = new Point(x, y);
+        food.setCoords(new Point(x, y));
 
-        /*int specialFoodChance = r.nextInt(10);
+        int specialFoodChance = r.nextInt(10);
         if (specialFoodChance == 5)
-        {
-            food = new Point(x, y);
-            specialFood = null;
-        }
+            food.setType(FoodType.SPECIAL);
         else
-        {
-            specialFood = new Point(x, y);
-            food = null;
-        }*/
+            food.setType(FoodType.NORMAL);
     }
 
     private Point checkCoords(Point p)
@@ -202,10 +199,7 @@ public class GamingField extends JPanel implements KeyListener
 
     private boolean onFood (Point head)
     {
-        if (food != null)
-            return head.getX() == food.getX() && head.getY() == food.getY();
-        else
-            return head.getX() == specialFood.getX() && head.getY() == specialFood.getY();
+        return head.getX() == food.getCoords().getX() && head.getY() == food.getCoords().getY();
     }
 
     @Override
@@ -221,14 +215,12 @@ public class GamingField extends JPanel implements KeyListener
             g.fillRect(p.getX()*dim, p.getY()*dim, dim, dim);
         }
 
-        g.setColor(Color.RED);
-        if (food != null)
-            g.fillRect(food.getX() * dim, food.getY() * dim, dim, dim);
+        if (food.getType() == FoodType.NORMAL)
+            g.setColor(Color.RED);
+        else
+            g.setColor(Color.MAGENTA);
 
-        g.setColor(Color.MAGENTA);
-        if (specialFood != null)
-            g.fillRect(specialFood.getX() * dim, specialFood.getY() * dim, dim, dim);
-
+        g.fillRect(food.getCoords().getX() * dim, food.getCoords().getY() * dim, dim, dim);
         g.setColor(Color.WHITE);
 
         // Рисуем вертикальные линии
