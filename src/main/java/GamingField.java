@@ -10,7 +10,8 @@ public class GamingField extends JPanel implements KeyListener
     private final int dim = 20;
 
     private Snake snake;
-    private Point food;
+    private Point food; // +1 point
+    private Point specialFood; // +2 points, spawns randomly
     private final Timer timer;
 
     private boolean isStopped = false;
@@ -152,6 +153,18 @@ public class GamingField extends JPanel implements KeyListener
         }
 
         food = new Point(x, y);
+
+        /*int specialFoodChance = r.nextInt(10);
+        if (specialFoodChance == 5)
+        {
+            food = new Point(x, y);
+            specialFood = null;
+        }
+        else
+        {
+            specialFood = new Point(x, y);
+            food = null;
+        }*/
     }
 
     private Point checkCoords(Point p)
@@ -189,7 +202,10 @@ public class GamingField extends JPanel implements KeyListener
 
     private boolean onFood (Point head)
     {
-        return head.getX() == food.getX() && head.getY() == food.getY();
+        if (food != null)
+            return head.getX() == food.getX() && head.getY() == food.getY();
+        else
+            return head.getX() == specialFood.getX() && head.getY() == specialFood.getY();
     }
 
     @Override
@@ -206,7 +222,24 @@ public class GamingField extends JPanel implements KeyListener
         }
 
         g.setColor(Color.RED);
-        g.fillRect(food.getX() * dim, food.getY() * dim, dim, dim);
+        if (food != null)
+            g.fillRect(food.getX() * dim, food.getY() * dim, dim, dim);
+
+        g.setColor(Color.MAGENTA);
+        if (specialFood != null)
+            g.fillRect(specialFood.getX() * dim, specialFood.getY() * dim, dim, dim);
+
+        g.setColor(Color.WHITE);
+
+        // Рисуем вертикальные линии
+        for (int x = 0; x <= width; x++) {
+            g.drawLine(x * dim, 0, x * dim, height * dim);
+        }
+
+        // Рисуем горизонтальные линии
+        for (int y = 0; y <= height; y++) {
+            g.drawLine(0, y * dim, width * dim, y * dim);
+        }
     }
 
     @Override

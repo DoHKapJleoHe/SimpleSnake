@@ -51,6 +51,10 @@ public class Snake
         this.score++;
     }
 
+    public void add2Score(){
+        this.score += 2;
+    }
+
     public int getScore()
     {
         return score;
