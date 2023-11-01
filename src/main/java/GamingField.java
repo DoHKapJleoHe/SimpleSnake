@@ -21,8 +21,8 @@ public class GamingField extends JPanel implements KeyListener
 
     private ScoreObserver scoreObserver;
 
-    File eatingMusicPath = new File("src/main/resources/EatingSound.wav");
-    File gameoverMusicPath = new File("src/main/resources/GameOver.wav");
+    private final File eatingMusicPath = new File("src/main/resources/EatingSound.wav");
+    private final File gameoverMusicPath = new File("src/main/resources/GameOver.wav");
 
     public GamingField()
     {
@@ -239,7 +239,6 @@ public class GamingField extends JPanel implements KeyListener
         }
         catch (Exception e)
         {
-
         }
     }
 
