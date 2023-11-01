@@ -1,6 +1,10 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Random;
 
 public class GamingField extends JPanel implements KeyListener
@@ -16,6 +20,9 @@ public class GamingField extends JPanel implements KeyListener
     private boolean isStopped = false;
 
     private ScoreObserver scoreObserver;
+
+    File eatingMusicPath = new File("src/main/resources/EatingSound.wav");
+    File gameoverMusicPath = new File("src/main/resources/GameOver.wav");
 
     public GamingField()
     {
@@ -122,6 +129,7 @@ public class GamingField extends JPanel implements KeyListener
                 snake.getBody().remove(snake.getSnakeLength() - 1);
             else
             {
+                playMusic(eatingMusicPath);
                 if (food.getType() == FoodType.NORMAL)
                     snake.addScore();
                 else
@@ -134,6 +142,7 @@ public class GamingField extends JPanel implements KeyListener
 
         if (checkSelfCollision())
         {
+            playMusic(gameoverMusicPath);
             killSnake();
         }
     }
@@ -184,6 +193,7 @@ public class GamingField extends JPanel implements KeyListener
         if (p.getY() >= height || p.getY() < 0 || p.getX() < 0 || p.getX() >= width)
         {
             timer.stop();
+            playMusic(gameoverMusicPath);
             JOptionPane.showConfirmDialog(this, "Game over!", "Snake", JOptionPane.YES_NO_OPTION);
             killSnake();
             return null;
@@ -213,6 +223,26 @@ public class GamingField extends JPanel implements KeyListener
         return head.getX() == food.getCoords().getX() && head.getY() == food.getCoords().getY();
     }
 
+    private void playMusic(File musicPath)
+    {
+        try
+        {
+            if(musicPath.exists())
+            {
+                AudioInputStream audioInput = AudioSystem.getAudioInputStream(musicPath);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInput);
+                clip.start();
+            }
+            else
+                System.out.println("Can't find sound!");
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+
     @Override
     public void paint(Graphics g)
     {
@@ -232,15 +262,17 @@ public class GamingField extends JPanel implements KeyListener
             g.setColor(Color.MAGENTA);
 
         g.fillRect(food.getCoords().getX() * dim, food.getCoords().getY() * dim, dim, dim);
-        g.setColor(Color.WHITE);
+        g.setColor(Color.GRAY);
 
-        // Рисуем вертикальные линии
-        for (int x = 0; x <= width; x++) {
+        // vertical lines
+        for (int x = 0; x <= width; x++)
+        {
             g.drawLine(x * dim, 0, x * dim, height * dim);
         }
 
-        // Рисуем горизонтальные линии
-        for (int y = 0; y <= height; y++) {
+        // horizontal lines
+        for (int y = 0; y <= height; y++)
+        {
             g.drawLine(0, y * dim, width * dim, y * dim);
         }
     }
