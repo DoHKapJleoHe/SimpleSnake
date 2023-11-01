@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class NewPlayerDialog extends JPanel
 {
@@ -19,10 +21,23 @@ public class NewPlayerDialog extends JPanel
         nameInput.setPreferredSize(new Dimension(100, 20));
         this.add(nameInput);
 
-        nameInput.addActionListener(e -> {
+        nameInput.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                name = nameInput.getText();
+                snake.setName(name);
+            }
+        });
+        /*nameInput.addActionListener(e -> {
             name = nameInput.getText();
             snake.setName(name);
-        });
+        });*/
+
     }
 
     public void setSnake(Snake snake) {

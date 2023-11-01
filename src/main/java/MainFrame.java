@@ -58,11 +58,40 @@ public class MainFrame extends JFrame implements ScoreObserver
         scoreLabel.setText("Score : "+score);
     }
 
+    /**
+     * This method updates score board on the main game frame.
+     * If players name already exist in the table, then the score
+     * will be updated only if new score is bigger than current score
+     *
+     * @param snake
+     */
     @Override
     public void updateScoreTable(Snake snake)
     {
         playerDialog.setSnake(snake);
         JOptionPane.showConfirmDialog(null, playerDialog, "New Player", JOptionPane.YES_NO_OPTION);
-        scoreTableModel.addRow(new Object[]{snake.getName(), snake.getScore()});
+
+        String playerName = snake.getName();
+        int newScore = snake.getScore();
+
+        boolean updated = false;
+
+        for (int row = 0; row < scoreTableModel.getRowCount(); row++)
+        {
+            String existingName = (String) scoreTableModel.getValueAt(row, 0);
+
+            if (existingName.equals(playerName))
+            {
+                int curScore = (int) scoreTableModel.getValueAt(row, 1);
+                if (newScore > curScore)
+                    scoreTableModel.setValueAt(newScore, row, 1);
+
+                updated = true;
+                break;
+            }
+        }
+
+        if(!updated)
+            scoreTableModel.addRow(new Object[]{snake.getName(), snake.getScore()});
     }
 }

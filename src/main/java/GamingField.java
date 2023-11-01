@@ -43,8 +43,19 @@ public class GamingField extends JPanel implements KeyListener
 
     private void createNewSnake()
     {
-        snake = new Snake();
-        timer.start();
+        if (snake == null)
+        {
+            snake = new Snake();
+            timer.start();
+        }
+        else
+        {
+            String prevSnakeName = snake.getName();
+            snake = new Snake();
+            snake.setName(prevSnakeName);
+
+            timer.start();
+        }
     }
 
     private void killSnake()
