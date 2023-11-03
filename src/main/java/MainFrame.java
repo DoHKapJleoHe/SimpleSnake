@@ -69,29 +69,30 @@ public class MainFrame extends JFrame implements ScoreObserver
     public void updateScoreTable(Snake snake)
     {
         playerDialog.setSnake(snake);
-        JOptionPane.showConfirmDialog(null, playerDialog, "New Player", JOptionPane.YES_NO_OPTION);
-
-        String playerName = snake.getName();
-        int newScore = snake.getScore();
-
-        boolean updated = false;
-
-        for (int row = 0; row < scoreTableModel.getRowCount(); row++)
+        if (JOptionPane.showConfirmDialog(null, playerDialog, "New Player", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
         {
-            String existingName = (String) scoreTableModel.getValueAt(row, 0);
+            String playerName = snake.getName();
+            int newScore = snake.getScore();
 
-            if (existingName.equals(playerName))
+            boolean updated = false;
+
+            for (int row = 0; row < scoreTableModel.getRowCount(); row++)
             {
-                int curScore = (int) scoreTableModel.getValueAt(row, 1);
-                if (newScore > curScore)
-                    scoreTableModel.setValueAt(newScore, row, 1);
+                String existingName = (String) scoreTableModel.getValueAt(row, 0);
 
-                updated = true;
-                break;
+                if (existingName.equals(playerName))
+                {
+                    int curScore = (int) scoreTableModel.getValueAt(row, 1);
+                    if (newScore > curScore)
+                        scoreTableModel.setValueAt(newScore, row, 1);
+
+                    updated = true;
+                    break;
+                }
             }
-        }
 
-        if(!updated)
-            scoreTableModel.addRow(new Object[]{snake.getName(), snake.getScore()});
+            if(!updated)
+                scoreTableModel.addRow(new Object[]{snake.getName(), snake.getScore()});
+        }
     }
 }
