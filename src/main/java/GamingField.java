@@ -9,6 +9,7 @@ import java.util.Random;
 
 public class GamingField extends JPanel implements KeyListener
 {
+    // 20x20 seems to be better
     private final int width = 30;
     private final int height = 30;
     private final int dim = 20;
@@ -35,7 +36,7 @@ public class GamingField extends JPanel implements KeyListener
 
 
         food = new Food(new Point(13, 18));
-        timer = new Timer(200, e -> {
+        timer = new Timer(100, e -> {
             moveSnake();
             repaint();
         });
